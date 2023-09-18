@@ -6,6 +6,8 @@ Find And Replace
 python3 far <path> <query> <replace> <-flag>
 ```
 
+This will explore the `path` and search the contents of files for `query`, and replace them with `replace`.
+
 If given a path to a directory, it will explore all subdirectories and search through all files. If given a file, it will only search through that file.
 
 Flags are:
