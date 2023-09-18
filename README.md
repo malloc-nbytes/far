@@ -8,6 +8,7 @@ python3 far <path> <query> <replace> <-flag>
 Flags are:
 
 `-e` exact occurrences, uses regex to find exact matches to `query`
+
 `-a` all occurrences, does not use regex to find exact matches to `query`
 
 As an example, if I run with the following:
