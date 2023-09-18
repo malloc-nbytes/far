@@ -1,6 +1,8 @@
 # far
 Find And Replace
 
+Use at your own risk.
+
 # Usage
 ```bash
 python3 far <path> <query> <replace> <-flag>
