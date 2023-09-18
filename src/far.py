@@ -44,19 +44,23 @@ def summary():
         for i, item in enumerate(FILES_TO_MODIFY):
             path = item[0]
             print(f"[far]    ({i}) {path}")
-        print("[far] Type space separated indexes of paths to discard.")
-        discard = input().split()
+        print("[far] Type space separated indexes of paths to modify.")
+        modify = input().split()
+        if 'a' in modify:
+            modify = []
+            for i in range(0, files_len - 1):
+                modify.append(str(i))
         try:
-            discard = [int(d) for d in discard]
+            modify = [int(m) for m in modify]
         except:
             print("[far] Error during parsing. Exiting...")
-        for i, item in enumerate(FILES_TO_MODIFY):
-            if i not in discard:
-                path = item[0]
-                data = item[1]
-                with open(path, 'w') as fp:
-                    fp.write(data)
-                print(f"[far] Modified {path}")
+            return
+        for i in modify:
+            path = FILES_TO_MODIFY[i][0]
+            data = FILES_TO_MODIFY[i][1]
+            with open(path, 'r') as fp:
+                fp.write(data)
+            print(f"[far] Modified: {path}")
     else:
         print("[far] No files had the matching query.")
     print("[far] Done.")
