@@ -39,28 +39,38 @@ def usage():
 def summary():
     global FILES_TO_MODIFY
     files_len = len(FILES_TO_MODIFY)
+
     if files_len != 0:
         print(f"[far] Found {files_len} files with the matching query.")
         for i, item in enumerate(FILES_TO_MODIFY):
             path = item[0]
             print(f"[far]    ({i}) {path}")
-        print("[far] Type space separated indexes of paths to modify.")
+
+        print("[far] Type space separated indexes of paths to modify, or `a` for all, or `c` to cancel.")
         modify = input().split()
+
+        if 'c' in modify:
+            print("[far] Exiting...")
+            return
+
         if 'a' in modify:
             modify = []
             for i in range(0, files_len - 1):
                 modify.append(str(i))
+
         try:
             modify = [int(m) for m in modify]
         except:
             print("[far] Error during parsing. Exiting...")
             return
+
         for i in modify:
             path = FILES_TO_MODIFY[i][0]
             data = FILES_TO_MODIFY[i][1]
-            with open(path, 'r') as fp:
+            with open(path, 'w') as fp:
                 fp.write(data)
             print(f"[far] Modified: {path}")
+
     else:
         print("[far] No files had the matching query.")
     print("[far] Done.")
