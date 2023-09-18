@@ -2,16 +2,21 @@
 
 import os
 import sys
+import re
 
 FILES_TO_MODIFY = []
-
+EXACT = False
 
 def find_and_replace(path, query, replace):
-    global FILES_TO_MODIFY
+    global FILES_TO_MODIFY, EXACT
     try:
         with open(path, 'r') as fp:
             data = fp.read()
-            modified_data = data.replace(query, replace)
+            if EXACT:
+                pattern = r'\b' + re.escape(query) + r'\b'
+                modified_data = re.sub(pattern, replace, data)
+            else:
+                modified_data = data.replace(query, replace)
             if modified_data != data:
                 FILES_TO_MODIFY.append((path, modified_data))
     except:
@@ -32,7 +37,10 @@ def walkdirs(path, query, replace):
 
 def usage():
     print("Usage:")
-    print("    far <path> <query> <replace>")
+    print("    far <path> <query> <replace> <-flags>")
+    print("Flags:")
+    print("    -e    exact occurrences, uses regex to find exact matches to `query`")
+    print("    -a    all occurrences, does not use regex to find exact matches to `query`")
     sys.exit(1)
 
 
@@ -55,7 +63,7 @@ def summary():
 
         if 'a' in modify:
             modify = []
-            for i in range(0, files_len - 1):
+            for i in range(0, files_len):
                 modify.append(str(i))
 
         try:
@@ -79,12 +87,21 @@ def summary():
 argv = sys.argv[1::]
 argc = len(argv) - 1
 
-if argc < 2:
+if argc < 3:
     usage()
 
 path = argv[0]
 query = argv[1]
 replace = argv[2]
+flag = argv[3]
+
+if flag == "-e":
+    EXACT = True
+elif flag == "-a":
+    EXACT = False
+else:
+    print(f"[far] Unknown flag {flag}")
+    usage()
 
 walkdirs(path, query, replace)
 
