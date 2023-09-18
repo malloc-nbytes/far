@@ -19,8 +19,8 @@ def find_and_replace(path, query, replace):
                 modified_data = data.replace(query, replace)
             if modified_data != data:
                 FILES_TO_MODIFY.append((path, modified_data))
-    except:
-        print(f"[far] Failed to open file {path}! Skipping...")
+    except Exception as e:
+        print(f"[ERR] Failed to open file {path}. Reason: {str(e)}. Skipping...")
 
 
 def walkdirs(path, query, replace):
@@ -36,9 +36,9 @@ def walkdirs(path, query, replace):
 
 
 def usage():
-    print("Usage:")
+    print("[far] Usage:")
     print("    far <path> <query> <replace> <-flags>")
-    print("Flags:")
+    print("[far] Flags:")
     print("    -e    exact occurrences, uses regex to find exact matches to `query`")
     print("    -a    all occurrences, does not use regex to find exact matches to `query`")
     sys.exit(1)
@@ -49,12 +49,12 @@ def summary():
     files_len = len(FILES_TO_MODIFY)
 
     if files_len != 0:
-        print(f"[far] Found {files_len} files with the matching query.")
+        print(f"[far] Found {files_len} file(s) with the matching query.")
         for i, item in enumerate(FILES_TO_MODIFY):
             path = item[0]
             print(f"[far]    ({i}) {path}")
 
-        print("[far] Type space separated indexes of paths to modify, or `a` for all, or `c` to cancel.")
+        print("[far] Type space separated indexes of path(s) to modify, or `a` for all, or `c` to cancel.")
         modify = input().split()
 
         if 'c' in modify:
@@ -68,9 +68,16 @@ def summary():
 
         try:
             modify = [int(m) for m in modify]
-        except:
-            print("[far] Error during parsing. Exiting...")
-            return
+        except Exception as e:
+            print(f"[ERR] Error during parsing. Reason: {str(e)}. Exiting...")
+            sys.exit(1)
+
+        if len(modify) > 0:
+            print(f"[far] WARNING: THIS WILL IRREVERSIBLE MODIFY {len(modify)} FILE(S). ARE YOU SURE YOU WANT TO CONTINUE? (Y/n)")
+            warning = input()
+            if warning.lower() != 'y':
+                print("[far] Exiting...")
+                sys.exit(1)
 
         for i in modify:
             path = FILES_TO_MODIFY[i][0]
