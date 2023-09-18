@@ -29,3 +29,10 @@ python3 far /home/myfiles/dev/python-projects/ def fed -a
 ```
 
 It will replace **all** occurrences of the query _def_ and replace it with _fed_. So if you have a word such as _default_, it will be replaced with _fedault_.
+
+# Install
+Run the install script in the root directory.
+
+```bash
+./install.sh
+```
