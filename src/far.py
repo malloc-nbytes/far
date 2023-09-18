@@ -1,16 +1,31 @@
 #!/bin/python3
 
 import os
+import sys
+
+FILES_TO_MODIFY = []
+
+
+def find_and_replace(path, query, replace):
+    global FILES_TO_MODIFY
+    try:
+        with open(path, 'r') as fp:
+            data = fp.read()
+            modified_data = data.replace(query, replace)
+            if modified_data != data:
+                FILES_TO_MODIFY.append((path, modified_data))
+    except:
+        print(f"[far] Failed to open file {path}! Skipping...")
 
 
 def walkdirs(path, query, replace):
     if os.path.isfile(path):
-        print("Found file:", path)
+        find_and_replace(path, query, replace)
     elif os.path.isdir(path):
         for root, _, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
-                fp = open(file_path, "rw")
+                find_and_replace(file_path, query, replace)
     else:
         print("Path does not exist:", path)
 
@@ -21,7 +36,33 @@ def usage():
     sys.exit(1)
 
 
-argv = os.sys.argv[1::]
+def summary():
+    global FILES_TO_MODIFY
+    files_len = len(FILES_TO_MODIFY)
+    if files_len != 0:
+        print(f"[far] Found {files_len} files with the matching query.")
+        for i, item in enumerate(FILES_TO_MODIFY):
+            path = item[0]
+            print(f"[far]    ({i}) {path}")
+        print("[far] Type space separated indexes of paths to discard.")
+        discard = input().split()
+        try:
+            discard = [int(d) for d in discard]
+        except:
+            print("[far] Error during parsing. Exiting...")
+        for i, item in enumerate(FILES_TO_MODIFY):
+            if i not in discard:
+                path = item[0]
+                data = item[1]
+                with open(path, 'w') as fp:
+                    fp.write(data)
+                print(f"[far] Modified {path}")
+    else:
+        print("[far] No files had the matching query.")
+    print("[far] Done.")
+
+
+argv = sys.argv[1::]
 argc = len(argv) - 1
 
 if argc < 2:
@@ -32,3 +73,5 @@ query = argv[1]
 replace = argv[2]
 
 walkdirs(path, query, replace)
+
+summary()
