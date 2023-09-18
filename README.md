@@ -5,6 +5,9 @@ Find And Replace
 ```bash
 python3 far <path> <query> <replace> <-flag>
 ```
+
+If given a path to a directory, it will explore all subdirectories and search through all files. If given a file, it will only search through that file.
+
 Flags are:
 
 `-e` exact occurrences, uses regex to find exact matches to `query`
