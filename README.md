@@ -17,7 +17,7 @@ As an example, if I run with the following:
 python3 far /home/myfiles/dev/python-projects/ def fed -e
 ```
 
-It will only replace occurrences of the *exact* query _def_ and replace it with _fed_.
+It will only replace occurrences of the **exact** query _def_ and replace it with _fed_.
 
 However, if I ran with:
 
